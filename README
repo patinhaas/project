@@ -1,0 +1,5 @@
+bcrypt - criar um hash para senha do usuario (seguranca)
+dotenv - 
+express
+jsonwebtoken
+ mongoose
