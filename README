@@ -1,17 +1,90 @@
-bcrypt - criar um hash para senha do usuario (seguranca)
-dotenv - 
-express
-jsonwebtoken
- mongoose
- cors-  o corsseu servidor Express.js, você está permitindo que o servidor aceite serviços de diferentes origens, o que é essencial para permitir a comunicação entre o frontend e o backend em uma aplicação web. Isso é particularmente importante em aplicações React
- iniciar o projeto: npm start
- psql -U postgres
- navegar pela tabela pasta da tabela project/bd/prisma e executar :
- npx prisma studio
+# Patinhas Web
 
-rodar back end->cd back-end  navague ate a pasta e de o npm start
-rodar front end-> navague ate a pasta e de o npm start
-rodar baco de dados-> cd back-end/bd/prisma  npx prisma studio
-rodar front-end e back-end na mesma porta
+Este é o repositório para o projeto Patinhas Web, uma aplicação web desenvolvida para gerenciar doações para animais em situação de rua.
 
+## Recursos Utilizados
+
+- **bcrypt**: Utilizado para criar um hash seguro para as senhas dos usuários, garantindo maior segurança.
+- **dotenv**: Utilizado para carregar variáveis de ambiente a partir de um arquivo `.env`, facilitando a configuração do ambiente.
+- **Express**: Framework para desenvolvimento de aplicativos web em Node.js.
+- **jsonwebtoken**: Utilizado para gerar e verificar tokens JWT (JSON Web Tokens) para autenticação de usuários.
+- **mongoose**: ODM (Object-Document Mapping) para MongoDB, facilitando a interação com o banco de dados.
+- **cors**: Utilizado no servidor Express.js para permitir solicitações de diferentes origens, essencial para a comunicação entre o frontend e o backend em aplicações React.
+
+## Como Iniciar o Projeto
+
+1. Clone o repositório:
+
+```bash
+git clone https://github.com/YASMINCOS/project_patinhas_web.git
+```
+
+2. Instale as dependências do projeto:
+
+```bash
+cd project_patinhas_web
+npm install
+```
+
+3. Configurações do Banco de Dados:
+
+   - Acesse o PostgreSQL:
+
+   ```bash
+   psql -U postgres
+   ```
+
+   - Navegue até a pasta da tabela do banco de dados (por exemplo, `back-end/bd/prisma`) e execute:
+
+   ```bash
+   npx prisma studio
+   ```
+
+4. Execute o backend:
+
+   - Navegue até a pasta do backend:
+
+   ```bash
+   cd back-end
+   ```
+
+   - Inicie o servidor:
+
+   ```bash
+   npm start
+   ```
+
+5. Execute o frontend:
+
+   - Navegue até a pasta do frontend:
+
+   ```bash
+   cd front-end
+   ```
+
+   - Inicie o servidor:
+
+   ```bash
+   npm start
+   ```
+
+## Rodando Múltiplos Servidores na Mesma Porta
+
+Se você precisar rodar o frontend e o backend na mesma porta, você pode configurar um proxy no arquivo `package.json` do frontend. Por exemplo:
+
+```json
+"proxy": "http://localhost:3001"
+```
+
+Isso redirecionará todas as solicitações para o servidor backend.
+
+## Executando Migrações do Prisma
+
+Para executar as migrações do Prisma, navegue até a pasta do banco de dados e execute:
+
+```bash
 npx prisma migrate dev
+```
+
+Isso aplicará todas as migrações pendentes no banco de dados.
+
