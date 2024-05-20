@@ -88,3 +88,4 @@ npx prisma migrate dev
 
 Isso aplicará todas as migrações pendentes no banco de dados.
 
+
