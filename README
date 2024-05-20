@@ -3,3 +3,15 @@ dotenv -
 express
 jsonwebtoken
  mongoose
+ cors-  o corsseu servidor Express.js, você está permitindo que o servidor aceite serviços de diferentes origens, o que é essencial para permitir a comunicação entre o frontend e o backend em uma aplicação web. Isso é particularmente importante em aplicações React
+ iniciar o projeto: npm start
+ psql -U postgres
+ navegar pela tabela pasta da tabela project/bd/prisma e executar :
+ npx prisma studio
+
+rodar back end->cd back-end  navague ate a pasta e de o npm start
+rodar front end-> navague ate a pasta e de o npm start
+rodar baco de dados-> cd back-end/bd/prisma  npx prisma studio
+rodar front-end e back-end na mesma porta
+
+npx prisma migrate dev
