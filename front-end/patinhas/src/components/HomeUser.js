@@ -7,7 +7,7 @@ export default class HomeUser extends Component {
     super(props);
     this.state = {
       name: '',
-      photoUrl: '',
+      photoUrl: null,
       description: '',
       contactNumber: '',
       productId: '',
@@ -23,10 +23,10 @@ export default class HomeUser extends Component {
   handleSubmit = async (event) => {
     event.preventDefault();
     const { name, photoUrl, description, contactNumber } = this.state;
-  
+
     const user = JSON.parse(localStorage.getItem('user'));
-    const userId = user.id; 
-  
+    const userId = user.id;
+
     try {
       const response = await axios.post('/register/donations', { name, photoUrl, description, contactNumber, userId });
       console.log('Doação cadastrada com sucesso:', response.data);
@@ -34,7 +34,7 @@ export default class HomeUser extends Component {
       console.error('Erro ao cadastrar doação:', error);
     }
   };
-  
+
 
   handleGetProduct = async () => {
     const { productId } = this.state;
@@ -92,7 +92,7 @@ export default class HomeUser extends Component {
             </div>
             <div className="form-group">
               <label>Foto do Produto:</label>
-              <input type="text" className="form-control" name="photoUrl" value={photoUrl} onChange={this.handleChange} required />
+              <input type="file" accept="image/*" className="form-control" onChange={this.handleFileChange} required />
             </div>
             <div className="form-group">
               <label>Numero de Contato:</label>
@@ -173,7 +173,7 @@ export default class HomeUser extends Component {
                 </div>
                 <div className="form-group">
                   <label>Foto do Produto:</label>
-                  <input type="text" className="form-control" name="photoUrl" value={photoUrl} onChange={this.handleChange} required />
+                  <input type="file" accept="image/*" className="form-control" onChange={this.handleFileChange} required />
                 </div>
                 <div className="form-group">
                   <label>Numero de Contato:</label>
