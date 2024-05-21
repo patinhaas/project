@@ -1,7 +1,4 @@
-# Patinhas Web
-
-Este é o repositório para o projeto Patinhas Web, uma aplicação web desenvolvida para gerenciar doações para animais em situação de rua.
-
+#Patinhas 
 ## Recursos Utilizados
 
 - **bcrypt**: Utilizado para criar um hash seguro para as senhas dos usuários, garantindo maior segurança.
