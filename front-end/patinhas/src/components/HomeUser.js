@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import HeaderUser from './HeaderUser'; // Importe o novo componente HeaderUser
 
 export default class HomeUser extends Component {
   constructor(props) {
@@ -30,16 +31,17 @@ export default class HomeUser extends Component {
     try {
       const response = await axios.post('/register/donations', { name, photoUrl, description, contactNumber, userId });
       console.log('Doação cadastrada com sucesso:', response.data);
+      // Atualiza a lista de produtos após a criação
+      this.handleGetAllProducts();
     } catch (error) {
       console.error('Erro ao cadastrar doação:', error);
     }
   };
 
-
   handleGetProduct = async () => {
     const { productId } = this.state;
     try {
-      const response = await axios.get(`/list/donations/${productId}`);
+      const response = await axios.get(`http://localhost:3001/list/donations/${productId}`);
       this.setState({ productData: response.data });
     } catch (error) {
       console.error('Erro ao consultar produto:', error);
@@ -48,7 +50,7 @@ export default class HomeUser extends Component {
 
   handleGetAllProducts = async () => {
     try {
-      const response = await axios.get('/list/donations');
+      const response = await axios.get('http://localhost:3001/list/donations');
       this.setState({ productData: response.data });
     } catch (error) {
       console.error('Erro ao buscar todos os produtos:', error);
@@ -58,8 +60,10 @@ export default class HomeUser extends Component {
   handleUpdateProduct = async () => {
     const { productId, name, photoUrl, description, contactNumber } = this.state;
     try {
-      const response = await axios.put(`/update/donations/${productId}`, { name, photoUrl, description, contactNumber });
+      const response = await axios.put(`http://localhost:3001/update/donations/${productId}`, { name, photoUrl, description, contactNumber });
       console.log('Produto atualizado com sucesso:', response.data);
+      // Atualiza a lista de produtos após a atualização
+      this.handleGetAllProducts();
     } catch (error) {
       console.error('Erro ao atualizar produto:', error);
     }
@@ -67,8 +71,10 @@ export default class HomeUser extends Component {
 
   handleDeleteProduct = async (productIdToDelete) => {
     try {
-      await axios.delete(`/delete/donations/${productIdToDelete}`);
+      await axios.delete(`http://localhost:3001/delete/donations/${productIdToDelete}`);
       console.log('Produto deletado com sucesso');
+      // Atualiza a lista de produtos após a exclusão
+      this.handleGetAllProducts();
     } catch (error) {
       console.error('Erro ao deletar produto:', error);
     }
@@ -79,9 +85,11 @@ export default class HomeUser extends Component {
 
     return (
       <div className="container">
+        <HeaderUser /> {/* Renderize o novo header aqui */}
         <header className="App-header">
-          <h1>Criar, Consultar, Atualizar e Excluir Produto</h1>
+          <h1>Cadastrar</h1>
           <form onSubmit={this.handleSubmit}>
+            {/* Formulário para criar um novo produto */}
             <div className="form-group">
               <label>Nome do Produto:</label>
               <input type="text" className="form-control" name="name" value={name} onChange={this.handleChange} required />
@@ -100,65 +108,26 @@ export default class HomeUser extends Component {
             </div>
             <button type="submit" className="btn btn-primary">Criar Produto</button>
           </form>
+
+          {/* Lista de produtos cadastrados */}
           <div>
-            <h2>Consultar Produto</h2>
-            <div className="form-group">
-              <label>ID do Produto:</label>
-              <input type="text" className="form-control" name="productId" value={productId} onChange={this.handleChange} />
-            </div>
-            <button className="btn btn-info" onClick={this.handleGetProduct}>Consultar</button>
-          </div>
-          <div>
-            <h2>Buscar Todos os Produtos</h2>
-            <button className="btn btn-success" onClick={this.handleGetAllProducts}>Buscar Todos</button>
-            {productData && (
-              <div>
-                {Array.isArray(productData) ? (
-                  <div>
-                    <h3>Dados de Todos os Produtos:</h3>
-                    {productData.map((product, index) => (
-                      <div key={index} className="card my-2">
-                        <div className="card-body">
-                          <p>Nome: {product.name}</p>
-                          <p>Descrição: {product.description}</p>
-                          <p>Foto: {product.photoUrl}</p>
-                          <p>Numero de Contato: {product.contactNumber}</p>
-                          {product.createdAt && (
-                            <p>Criado em: {product.createdAt}</p>
-                          )}
-                          {product.updatedAt && (
-                            <p>Atualizado em: {product.updatedAt}</p>
-                          )}
-                          <button className="btn btn-warning mr-2" onClick={() => this.setState({ productId: product.id })}>Editar</button>
-                          <button className="btn btn-danger" onClick={() => this.handleDeleteProduct(product.id)}>Excluir</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div>
-                    <h3>Dados do Produto:</h3>
-                    <div className="card">
-                      <div className="card-body">
-                        <p>Nome: {productData.name}</p>
-                        <p>Descrição: {productData.description}</p>
-                        <p>Foto: {productData.photoUrl}</p>
-                        <p>Numero de Contato: {productData.contactNumber}</p>
-                        {productData.createdAt && (
-                          <p>Criado em: {productData.createdAt}</p>
-                        )}
-                        {productData.updatedAt && (
-                          <p>Atualizado em: {productData.updatedAt}</p>
-                        )}
-                        <button className="btn btn-warning mr-2" onClick={() => this.setState({ productId: productData.id })}>Editar</button>
-                        <button className="btn btn-danger" onClick={() => this.handleDeleteProduct(productData.id)}>Excluir</button>
-                      </div>
-                    </div>
-                  </div>
-                )}
+            <h2>Produtos Cadastrados</h2>
+            {productData && productData.map((product) => (
+              <div key={product.id} className="card my-2">
+                <div className="card-body">
+                  <p>Nome: {product.name}</p>
+                  <p>Descrição: {product.description}</p>
+                  <p>Foto: {product.photoUrl}</p>
+                  <p>Numero de Contato: {product.contactNumber}</p>
+                  {/* Botões para atualizar e excluir o produto */}
+                  <button className="btn btn-warning mr-2" onClick={() => this.setState({ productId: product.id })}>Editar</button>
+                  <button className="btn btn-danger" onClick={() => this.handleDeleteProduct(product.id)}>Excluir</button>
+                </div>
               </div>
-            )}
+            ))}
           </div>
+
+          {/* Formulário para atualizar um produto existente */}
           {productId && (
             <div>
               <h2>Atualizar Produto</h2>
