@@ -96,7 +96,7 @@ app.post('/register/donations', async (req, res) => {
 });
 
 // Rota para listar todas as doações de um usuário
-app.get('/donations/:userId', async (req, res) => {
+app.get('/list/donations/:userId', async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -110,8 +110,20 @@ app.get('/donations/:userId', async (req, res) => {
   }
 });
 
+//rota para obter todas doacoes
+// Rota para obter todas as doações
+app.get('/listAll/api/donations', async (req, res) => {
+  try {
+    const donations = await prisma.donation.findMany(); // Retorna todas as doações
+    res.status(200).json(donations);
+  } catch (error) {
+    console.error('Erro ao buscar todas as doações:', error);
+    res.status(500).json({ msg: 'Erro ao buscar todas as doações' });
+  }
+});
+
 // Rota para atualizar uma doação
-app.put('/donations/:id', async (req, res) => {
+app.put('/update/donations/:id', async (req, res) => {
   const { id } = req.params;
   const { name, photoUrl, description, contactNumber } = req.body;
 
@@ -129,7 +141,7 @@ app.put('/donations/:id', async (req, res) => {
 });
 
 // Rota para deletar uma doação
-app.delete('/donations/:id', async (req, res) => {
+app.delete('/delete/donations/:id', async (req, res) => {
   const { id } = req.params;
 
   try {

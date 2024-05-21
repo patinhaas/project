@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importe o hook useNavigate
-import './css/Register.css';
+import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -9,7 +9,7 @@ function Register() {
         password: '',
         confirmPassword: ''
     });
-    const navigate = useNavigate(); // Use o hook useNavigate
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -34,8 +34,8 @@ function Register() {
             const data = await response.json();
             if (response.ok) {
                 console.log(data.msg);
-                localStorage.setItem('user', JSON.stringify(data.user)); // Salva o usuário no localStorage
-                navigate('/homeuser'); // Redirecione para a tela de doações
+                localStorage.setItem('user', JSON.stringify(data.user));
+                navigate('/homeuser');
             } else {
                 console.error(data.msg);
             }
@@ -45,19 +45,37 @@ function Register() {
     };
 
     return (
-        <div className="register-container">
-            <h2 className="register-title">Cadastro de Usuário</h2>
-            <form className="register-form" onSubmit={handleSubmit}>
-                <label htmlFor="name">Nome:</label>
-                <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
-                <label htmlFor="email">Email:</label>
-                <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
-                <label htmlFor="password">Senha:</label>
-                <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
-                <label htmlFor="confirmPassword">Confirme a Senha:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
-                <button type="submit">Registrar</button>
-            </form>
+        <div className="container-fluid" style={{ backgroundColor: '#1eadef', height: '100vh' }}>
+            <div className="row justify-content-center align-items-center" style={{ height: '100%' }}>
+                <div className="col-md-6 col-lg-4">
+                    <div className="card shadow-lg" style={{ backgroundColor: '#ffffff' }}>
+                        <div className="card-body p-5">
+                            <h2 className="card-title text-center mb-4" style={{ color: '#1eadef' }}>Cadastro de Usuário</h2>
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label htmlFor="name" className="form-label">Nome:</label>
+                                    <input type="text" className="form-control" id="name" name="name" value={formData.name} onChange={handleChange} required />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label">Email:</label>
+                                    <input type="email" className="form-control" id="email" name="email" value={formData.email} onChange={handleChange} required />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="password" className="form-label">Senha:</label>
+                                    <input type="password" className="form-control" id="password" name="password" value={formData.password} onChange={handleChange} required />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="confirmPassword" className="form-label">Confirme a Senha:</label>
+                                    <input type="password" className="form-control" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+                                </div>
+                                <div className="d-grid gap-2">
+                                    <button type="submit" className="btn btn-primary btn-lg" style={{ backgroundColor: '#f1511b', borderColor: '#f1511b' }}>Registrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
