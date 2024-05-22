@@ -97,11 +97,11 @@ app.post('/register/donations', async (req, res) => {
 
 // Rota para listar todas as doações de um usuário
 app.get('/list/donations/:userId', async (req, res) => {
-  const { userId } = req.params;
+  const userId = parseInt(req.params.userId); // Convertendo o ID do usuário para inteiro
 
   try {
     const donations = await prisma.donation.findMany({
-      where: { userId: parseInt(userId) },
+      where: { userId: userId }, // Utilizando o ID do usuário corretamente
     });
     res.status(200).json(donations);
   } catch (error) {
@@ -110,7 +110,6 @@ app.get('/list/donations/:userId', async (req, res) => {
   }
 });
 
-//rota para obter todas doacoes
 // Rota para obter todas as doações
 app.get('/listAll/api/donations', async (req, res) => {
   try {

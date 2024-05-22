@@ -1,19 +1,27 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import HeaderUser from './HeaderUser'; // Importe o novo componente HeaderUser
 
 export default class HomeUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
-      photoUrl: null,
       description: '',
       contactNumber: '',
-      productId: '',
-      productData: null,
+      photoUrl: null,
+      productData: [],
+      isLoading: false,
+      error: null,
+      isEditing: false,
+      productId: null,
     };
+  }
+
+  componentDidMount() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user.id;
+    this.handleGetUserDonations(userId);
   }
 
   handleChange = (event) => {
@@ -21,138 +29,178 @@ export default class HomeUser extends Component {
     this.setState({ [name]: value });
   };
 
+  handleImageChange = (event) => {
+    this.setState({
+      photoUrl: URL.createObjectURL(event.target.files[0])
+    });
+  };
+
   handleSubmit = async (event) => {
     event.preventDefault();
-    const { name, photoUrl, description, contactNumber } = this.state;
-
+    const { name, description, contactNumber, photoUrl, productId } = this.state;
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.id;
-
+  
     try {
-      const response = await axios.post('/register/donations', { name, photoUrl, description, contactNumber, userId });
-      console.log('Doação cadastrada com sucesso:', response.data);
-      // Atualiza a lista de produtos após a criação
-      this.handleGetAllProducts();
+      this.setState({ isLoading: true });
+      if (productId) {
+        await axios.put(`http://localhost:3001/update/donations/${productId}`, {
+          name,
+          description,
+          contactNumber,
+          photoUrl,
+        });
+      } else {
+        await axios.post('http://localhost:3001/register/donations', {
+          name,
+          description,
+          contactNumber,
+          photoUrl,
+          userId,
+        });
+      }
+      await this.handleGetUserDonations(userId); // Atualiza a lista de produtos após a criação ou edição
+      this.clearForm();
+      this.setState({ isLoading: false });
     } catch (error) {
-      console.error('Erro ao cadastrar doação:', error);
+      console.error('Erro ao cadastrar/editar doação:', error);
+      this.setState({ error: 'Erro ao cadastrar/editar doação', isLoading: false });
+    }
+  };  
+
+  handleGetUserDonations = async (userId) => {
+    try {
+      this.setState({ isLoading: true });
+      const response = await axios.get(`http://localhost:3001/list/donations/${userId}`);
+      this.setState({ productData: response.data, isLoading: false });
+    } catch (error) {
+      console.error('Erro ao buscar as doações do usuário:', error);
+      this.setState({ error: 'Erro ao buscar as doações do usuário', isLoading: false });
     }
   };
 
-  handleGetProduct = async () => {
-    const { productId } = this.state;
+  handleEditDonation = (donation) => {
+    this.setState({
+      name: donation.name,
+      description: donation.description,
+      contactNumber: donation.contactNumber,
+      photoUrl: donation.photoUrl,
+      isEditing: true,
+      productId: donation.id,
+    });
+  };
+
+  handleDeleteDonation = async (donationId) => {
     try {
-      const response = await axios.get(`http://localhost:3001/list/donations/${productId}`);
-      this.setState({ productData: response.data });
+      this.setState({ isLoading: true });
+      await axios.delete(`http://localhost:3001/delete/donations/${donationId}`);
+      const user = JSON.parse(localStorage.getItem('user'));
+      const userId = user.id;
+      await this.handleGetUserDonations(userId); // Atualiza a lista de produtos após a exclusão
+      this.setState({ isLoading: false });
     } catch (error) {
-      console.error('Erro ao consultar produto:', error);
+      console.error('Erro ao deletar doação:', error);
+      this.setState({ error: 'Erro ao deletar doação', isLoading: false });
     }
   };
 
-  handleGetAllProducts = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/list/donations');
-      this.setState({ productData: response.data });
-    } catch (error) {
-      console.error('Erro ao buscar todos os produtos:', error);
-    }
-  };
-
-  handleUpdateProduct = async () => {
-    const { productId, name, photoUrl, description, contactNumber } = this.state;
-    try {
-      const response = await axios.put(`http://localhost:3001/update/donations/${productId}`, { name, photoUrl, description, contactNumber });
-      console.log('Produto atualizado com sucesso:', response.data);
-      // Atualiza a lista de produtos após a atualização
-      this.handleGetAllProducts();
-    } catch (error) {
-      console.error('Erro ao atualizar produto:', error);
-    }
-  };
-
-  handleDeleteProduct = async (productIdToDelete) => {
-    try {
-      await axios.delete(`http://localhost:3001/delete/donations/${productIdToDelete}`);
-      console.log('Produto deletado com sucesso');
-      // Atualiza a lista de produtos após a exclusão
-      this.handleGetAllProducts();
-    } catch (error) {
-      console.error('Erro ao deletar produto:', error);
-    }
+  clearForm = () => {
+    this.setState({
+      name: '',
+      description: '',
+      photoUrl: null,
+      contactNumber: '',
+      isEditing: false,
+      productId: null,
+    });
   };
 
   render() {
-    const { name, description, photoUrl, contactNumber, productId, productData } = this.state;
+    const { name, description, contactNumber, photoUrl, productData, isLoading, isEditing } = this.state;
 
     return (
       <div className="container">
-        <HeaderUser /> {/* Renderize o novo header aqui */}
-        <header className="App-header">
-          <h1>Cadastrar</h1>
-          <form onSubmit={this.handleSubmit}>
-            {/* Formulário para criar um novo produto */}
-            <div className="form-group">
-              <label>Nome do Produto:</label>
-              <input type="text" className="form-control" name="name" value={name} onChange={this.handleChange} required />
-            </div>
-            <div className="form-group">
-              <label>Descrição do Produto:</label>
-              <textarea className="form-control" name="description" value={description} onChange={this.handleChange} required />
-            </div>
-            <div className="form-group">
-              <label>Foto do Produto:</label>
-              <input type="file" accept="image/*" className="form-control" onChange={this.handleFileChange} required />
-            </div>
-            <div className="form-group">
-              <label>Numero de Contato:</label>
-              <input type="text" className="form-control" name="contactNumber" value={contactNumber} onChange={this.handleChange} required />
-            </div>
-            <button type="submit" className="btn btn-primary">Criar Produto</button>
-          </form>
-
-          {/* Lista de produtos cadastrados */}
-          <div>
-            <h2>Produtos Cadastrados</h2>
-            {productData && productData.map((product) => (
-              <div key={product.id} className="card my-2">
-                <div className="card-body">
-                  <p>Nome: {product.name}</p>
-                  <p>Descrição: {product.description}</p>
-                  <p>Foto: {product.photoUrl}</p>
-                  <p>Numero de Contato: {product.contactNumber}</p>
-                  {/* Botões para atualizar e excluir o produto */}
-                  <button className="btn btn-warning mr-2" onClick={() => this.setState({ productId: product.id })}>Editar</button>
-                  <button className="btn btn-danger" onClick={() => this.handleDeleteProduct(product.id)}>Excluir</button>
-                </div>
+        <div className="row mt-3">
+          <div className="col">
+            <h1>{isEditing ? 'Editar Produto' : 'Cadastrar Produto'}</h1>
+            <form onSubmit={this.handleSubmit}>
+              <div className="form-group">
+                <label>Nome do Produto:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="name"
+                  value={name}
+                  onChange={this.handleChange}
+                  required
+                />
               </div>
-            ))}
+              <div className="form-group">
+                <label>Descrição do Produto:</label>
+                <textarea
+                  className="form-control"
+                  name="description"
+                  value={description}
+                  onChange={this.handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Numero de Contato:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="contactNumber"
+                  value={contactNumber}
+                  onChange={this.handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Imagem do Produto:</label>
+                <input
+                  type="file"
+                  className="form-control-file"
+                  onChange={this.handleImageChange}
+                />
+              </div>
+              {photoUrl && (
+                <img src={photoUrl} alt="Product" className="img-fluid mb-2" style={{ maxHeight: '200px' }} />
+              )}
+              <button type="submit" className="btn btn-primary">
+                {isEditing ? 'Salvar Produto' : 'Criar Produto'}
+              </button>
+            </form>
           </div>
-
-          {/* Formulário para atualizar um produto existente */}
-          {productId && (
-            <div>
-              <h2>Atualizar Produto</h2>
-              <form onSubmit={this.handleUpdateProduct}>
-                <div className="form-group">
-                  <label>Nome do Produto:</label>
-                  <input type="text" className="form-control" name="name" value={name} onChange={this.handleChange} required />
+          <div className="col">
+            <h2>Produtos Cadastrados</h2>
+            {isLoading ? (
+              <p>Carregando...</p>
+            ) : (
+              productData.map((product) => (
+                <div key={product.id} className="card my-2">
+                  <div className="card-body">
+                    <p>Nome: {product.name}</p>
+                    <p>Descrição: {product.description}</p>
+                    <p>Numero de Contato: {product.contactNumber}</p>
+                    <button
+                      className="btn btn-warning mr-2"
+                      onClick={() => this.handleEditDonation(product)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => this.handleDeleteDonation(product.id)}
+                    >
+                      Excluir
+                    </button>
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label>Descrição do Produto:</label>
-                  <textarea className="form-control" name="description" value={description} onChange={this.handleChange} required />
-                </div>
-                <div className="form-group">
-                  <label>Foto do Produto:</label>
-                  <input type="file" accept="image/*" className="form-control" onChange={this.handleFileChange} required />
-                </div>
-                <div className="form-group">
-                  <label>Numero de Contato:</label>
-                  <input type="text" className="form-control" name="contactNumber" value={contactNumber} onChange={this.handleChange} required />
-                </div>
-                <button type="submit" className="btn btn-primary">Atualizar</button>
-              </form>
-            </div>
-          )}
-        </header>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     );
   }

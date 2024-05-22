@@ -7,7 +7,8 @@ function Login() {
         email: '',
         password: ''
     });
-
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -20,6 +21,8 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
 
         try {
             const response = await fetch('http://localhost:3001/auth/login', {
@@ -33,14 +36,15 @@ function Login() {
             const data = await response.json();
             if (response.ok) {
                 console.log(data.msg);
-                navigate('/homeuser', { state: { user: data.user } });
                 localStorage.setItem('user', JSON.stringify(data.user));
-
+                navigate('/homeuser', { state: { user: data.user } });
             } else {
-                console.error(data.msg);
+                setError(data.msg || 'Erro ao fazer login.');
             }
         } catch (error) {
-            console.error('Erro ao fazer login:', error);
+            setError('Erro ao fazer login. Por favor, tente novamente mais tarde.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -61,9 +65,12 @@ function Login() {
                                     <input type="password" className="form-control" id="password" name="password" value={formData.password} onChange={handleChange} required />
                                 </div>
                                 <div className="d-grid gap-2">
-                                    <button type="submit" className="btn btn-primary btn-lg" style={{ backgroundColor: '#f1511b', borderColor: '#f1511b' }}>Entrar</button>
+                                    <button type="submit" className="btn btn-primary btn-lg" style={{ backgroundColor: '#f1511b', borderColor: '#f1511b' }} disabled={loading}>
+                                        {loading ? 'Carregando...' : 'Entrar'}
+                                    </button>
                                 </div>
                             </form>
+                            {error && <p className="text-danger mt-3 text-center">{error}</p>}
                             <p className="mt-3 text-center">Não tem uma conta? <a href="/cadastro">Cadastrar-se</a></p>
                         </div>
                     </div>

@@ -1,28 +1,35 @@
-// HeaderUser.js
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logo from './logo.png'; // Importe sua logo utilizando o caminho correto
 
-const HeaderUser = () => {
-  const handleLogout = () => {
-    // Implemente a lógica para fazer logout aqui
-    localStorage.removeItem('user');
-    // Redirecione para a página de login após o logout
-    window.location.href = '/login';
-  };
-
+const HeaderUser = ({ handleLogout }) => {
   return (
-    <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <Link className="navbar-brand" to="/homeuser">Home</Link>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav ml-auto">
+    <header className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: '#80cc28', maxHeight: '8vh' }}>
+      <div className="container">
+        <Link className="navbar-brand" to="/">
+          <img src={logo} alt="Logo" className="logo img-fluid" style={{ maxHeight: '100%', width: 'auto' }} />
+        </Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/homeUser">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/registerDonation">Cadastro Doacao</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/cadastro">Perfil</Link>
+            </li>
             <li className="nav-item">
               <button className="btn btn-primary" onClick={handleLogout}>Logout</button>
             </li>
           </ul>
         </div>
-      </nav>
-    </div>
+      </div>
+    </header>
   );
 };
 
