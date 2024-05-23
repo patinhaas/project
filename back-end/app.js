@@ -4,6 +4,8 @@ const { PrismaClient } = require('@prisma/client');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); // Diretório onde as imagens serão salvas
 
 const prisma = new PrismaClient();
 const app = express();
@@ -73,25 +75,97 @@ app.post('/auth/login', async (req, res) => {
   }
 });
 
-// Rota para criar uma doação
-app.post('/register/donations', async (req, res) => {
-  const { name, photoUrl, description, contactNumber, userId } = req.body;
+app.get('/user/:id', async (req, res) => {
+  const { id } = req.params;
 
   try {
-    const donation = await prisma.donation.create({
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!user) {
+      return res.status(404).json({ msg: 'Usuário não encontrado' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Erro ao buscar usuário:', error);
+    res.status(500).json({ msg: 'Erro ao buscar usuário' });
+  }
+});
+
+// Rota para atualizar dados do usuário
+app.put('/update/user/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, email, password } = req.body;
+
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({ msg: 'Usuário não encontrado' });
+    }
+
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : existingUser.password;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: parseInt(id) },
       data: {
         name,
-        photoUrl,
-        description,
-        contactNumber,
-        userId,
+        email,
+        password: hashedPassword,
       },
     });
 
-    res.status(200).json({ msg: 'Doação cadastrada com sucesso', donation });
+    res.status(200).json({ msg: 'Usuário atualizado com sucesso', user: updatedUser });
   } catch (error) {
-    console.error('Erro ao cadastrar doação:', error);
-    res.status(500).json({ msg: 'Erro ao cadastrar doação' });
+    console.error('Erro ao atualizar usuário:', error);
+    res.status(500).json({ msg: 'Erro ao atualizar usuário' });
+  }
+});
+
+// Rota para deletar usuário
+app.delete('/delete/user/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await prisma.user.delete({
+      where: { id: parseInt(id) },
+    });
+
+    res.status(200).json({ msg: 'Usuário deletado com sucesso' });
+  } catch (error) {
+    console.error('Erro ao deletar usuário:', error);
+    res.status(500).json({ msg: 'Erro ao deletar usuário' });
+  }
+});
+
+// Rota para criar uma doação
+app.post('/register/donations', upload.single('photoUrl'), async (req, res) => {
+  const { name, description, contactNumber, userId } = req.body;
+  const photoUrl = req.file ? req.file.path : null; // Caminho da foto salva
+
+  try {
+      if (!name || !description || !contactNumber || !userId) {
+          return res.status(400).json({ msg: 'Todos os campos são obrigatórios.' });
+      }
+
+      const donation = await prisma.donation.create({
+          data: {
+              name,
+              photoUrl,
+              description,
+              contactNumber,
+              userId: parseInt(userId),
+          },
+      });
+
+      res.status(200).json({ msg: 'Doação cadastrada com sucesso', donation });
+  } catch (error) {
+      console.error('Erro ao cadastrar doação:', error);
+      res.status(500).json({ msg: 'Erro ao cadastrar doação' });
   }
 });
 

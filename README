@@ -8,7 +8,7 @@
 - **mongoose**: ODM (Object-Document Mapping) para MongoDB, facilitando a interação com o banco de dados.
 - **cors**: Utilizado no servidor Express.js para permitir solicitações de diferentes origens, essencial para a comunicação entre o frontend e o backend em aplicações React.
 - **route-dom** 
-- 
+- multer- arquivos
 ## Como Iniciar o Projeto
 
 1. Clone o repositório:

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,6 +10,14 @@ function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Verifica se o usuário já está autenticado e redireciona para /homeuser
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            navigate('/homeuser', { state: { user } });
+        }
+    }, [navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,15 +43,21 @@ function Login() {
 
             const data = await response.json();
             if (response.ok) {
-                console.log(data.msg);
                 localStorage.setItem('user', JSON.stringify(data.user));
+                setLoading(false);
                 navigate('/homeuser', { state: { user: data.user } });
             } else {
-                setError(data.msg || 'Erro ao fazer login.');
+                if (response.status === 404) {
+                    setError('Usuário não cadastrado.');
+                } else if (response.status === 401) {
+                    setError('Senha incorreta.');
+                } else {
+                    setError(data.msg || 'Erro ao fazer login.');
+                }
+                setLoading(false);
             }
         } catch (error) {
             setError('Erro ao fazer login. Por favor, tente novamente mais tarde.');
-        } finally {
             setLoading(false);
         }
     };
@@ -58,14 +72,37 @@ function Login() {
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
                                     <label htmlFor="email" className="form-label">Email:</label>
-                                    <input type="email" className="form-control" id="email" name="email" value={formData.email} onChange={handleChange} required />
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                        disabled={loading}
+                                    />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="password" className="form-label">Senha:</label>
-                                    <input type="password" className="form-control" id="password" name="password" value={formData.password} onChange={handleChange} required />
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        id="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                        disabled={loading}
+                                    />
                                 </div>
                                 <div className="d-grid gap-2">
-                                    <button type="submit" className="btn btn-primary btn-lg" style={{ backgroundColor: '#f1511b', borderColor: '#f1511b' }} disabled={loading}>
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary btn-lg"
+                                        style={{ backgroundColor: '#f1511b', borderColor: '#f1511b' }}
+                                        disabled={loading}
+                                    >
                                         {loading ? 'Carregando...' : 'Entrar'}
                                     </button>
                                 </div>

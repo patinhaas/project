@@ -21,7 +21,7 @@ const HeaderUser = ({ handleLogout }) => {
               <Link className="nav-link" to="/registerDonation">Cadastro Doacao</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/cadastro">Perfil</Link>
+              <Link className="nav-link" to="./profile">Perfil</Link>
             </li>
             <li className="nav-item">
               <button className="btn btn-primary" onClick={handleLogout}>Logout</button>

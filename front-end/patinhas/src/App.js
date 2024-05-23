@@ -7,6 +7,8 @@ import Cadastro from './components/Register';
 import Login from './components/Login';
 import Home from './components/Home';
 import HomeUser from './components/HomeUser';
+import Profile from './components/Profile';
+import RegisterDonation from './components/RegisterDonation';
 
 function App() {
   // Defina um estado para verificar se o usuário está logado
@@ -34,6 +36,19 @@ function App() {
             path="/homeuser"
             element={isLoggedIn ? <HomeUser /> : <Navigate to="/login" />}
           />
+           <Route
+            path="/profile"
+            element={isLoggedIn ? <Profile /> : <Navigate to="/profile" />}
+          />
+          <Route
+            path="/profile"
+            element={isLoggedIn ? <Profile /> : <Navigate to="/profile" />}
+          />
+           <Route
+            path="/registerDonation"
+            element={isLoggedIn ? <RegisterDonation /> : <Navigate to="/registerDonation" />}
+          />
+
         </Routes>
       </div>
     </Router>

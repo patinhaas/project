@@ -14,6 +14,7 @@ export default class HomeUser extends Component {
       isLoading: false,
       error: null,
       isEditing: false,
+      isEditingModalOpen: false,
       productId: null,
     };
   }
@@ -24,9 +25,9 @@ export default class HomeUser extends Component {
     this.handleGetUserDonations(userId);
   }
 
-  handleChange = (event) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
+  handleChange = (event, fieldName) => {
+    const { value } = event.target;
+    this.setState({ [fieldName]: value });
   };
 
   handleImageChange = (event) => {
@@ -34,39 +35,6 @@ export default class HomeUser extends Component {
       photoUrl: URL.createObjectURL(event.target.files[0])
     });
   };
-
-  handleSubmit = async (event) => {
-    event.preventDefault();
-    const { name, description, contactNumber, photoUrl, productId } = this.state;
-    const user = JSON.parse(localStorage.getItem('user'));
-    const userId = user.id;
-  
-    try {
-      this.setState({ isLoading: true });
-      if (productId) {
-        await axios.put(`http://localhost:3001/update/donations/${productId}`, {
-          name,
-          description,
-          contactNumber,
-          photoUrl,
-        });
-      } else {
-        await axios.post('http://localhost:3001/register/donations', {
-          name,
-          description,
-          contactNumber,
-          photoUrl,
-          userId,
-        });
-      }
-      await this.handleGetUserDonations(userId); // Atualiza a lista de produtos após a criação ou edição
-      this.clearForm();
-      this.setState({ isLoading: false });
-    } catch (error) {
-      console.error('Erro ao cadastrar/editar doação:', error);
-      this.setState({ error: 'Erro ao cadastrar/editar doação', isLoading: false });
-    }
-  };  
 
   handleGetUserDonations = async (userId) => {
     try {
@@ -86,9 +54,11 @@ export default class HomeUser extends Component {
       contactNumber: donation.contactNumber,
       photoUrl: donation.photoUrl,
       isEditing: true,
+      isEditingModalOpen: true,
       productId: donation.id,
     });
   };
+
 
   handleDeleteDonation = async (donationId) => {
     try {
@@ -111,97 +81,162 @@ export default class HomeUser extends Component {
       photoUrl: null,
       contactNumber: '',
       isEditing: false,
+      isEditingModalOpen: false,
       productId: null,
     });
   };
 
+  // Método para abrir o modal de edição
+  openEditModal = () => {
+    this.setState({ isEditingModalOpen: true });
+  };
+
+  // Método para fechar o modal de edição
+  closeEditModal = () => {
+    this.setState({ isEditingModalOpen: false });
+  };
+
+  // Método para lidar com a submissão do formulário de edição
+  handleEditSubmit = async () => {
+    const { productId, name, description, contactNumber } = this.state;
+    try {
+      await axios.put(`http://localhost:3001/update/donations/${productId}`, {
+        name,
+        description,
+        contactNumber,
+      });
+      // Atualize a lista de doações após a edição bem-sucedida
+      const user = JSON.parse(localStorage.getItem('user'));
+      const userId = user.id;
+      await this.handleGetUserDonations(userId);
+      // Feche o modal de edição
+      this.closeEditModal();
+      // Limpe os campos do formulário de edição
+      this.clearForm();
+    } catch (error) {
+      console.error('Erro ao editar doação:', error);
+    }
+  };
+
   render() {
-    const { name, description, contactNumber, photoUrl, productData, isLoading, isEditing } = this.state;
+    const { productData, isLoading, isEditingModalOpen } = this.state;
 
     return (
-      <div className="container">
-        <div className="row mt-3">
-          <div className="col">
-            <h1>{isEditing ? 'Editar Produto' : 'Cadastrar Produto'}</h1>
-            <form onSubmit={this.handleSubmit}>
-              <div className="form-group">
-                <label>Nome do Produto:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  value={name}
-                  onChange={this.handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Descrição do Produto:</label>
-                <textarea
-                  className="form-control"
-                  name="description"
-                  value={description}
-                  onChange={this.handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Numero de Contato:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="contactNumber"
-                  value={contactNumber}
-                  onChange={this.handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Imagem do Produto:</label>
-                <input
-                  type="file"
-                  className="form-control-file"
-                  onChange={this.handleImageChange}
-                />
-              </div>
-              {photoUrl && (
-                <img src={photoUrl} alt="Product" className="img-fluid mb-2" style={{ maxHeight: '200px' }} />
-              )}
-              <button type="submit" className="btn btn-primary">
-                {isEditing ? 'Salvar Produto' : 'Criar Produto'}
-              </button>
-            </form>
+      <div className="container mt-5">
+        <div className="row">
+          <div className="col-lg-6">
+            <h2 className="mb-4">Bem-vindo à Plataforma de Doações</h2>
+            <p>
+              Aqui você pode encontrar doações disponíveis e visualizar as doações que você cadastrou.
+            </p>
           </div>
-          <div className="col">
-            <h2>Produtos Cadastrados</h2>
+        </div>
+        <div className="row mt-5">
+          <div className="col-lg-12">
+            <h2 className="mb-4">Suas Doações</h2>
             {isLoading ? (
               <p>Carregando...</p>
             ) : (
-              productData.map((product) => (
-                <div key={product.id} className="card my-2">
-                  <div className="card-body">
-                    <p>Nome: {product.name}</p>
-                    <p>Descrição: {product.description}</p>
-                    <p>Numero de Contato: {product.contactNumber}</p>
-                    <button
-                      className="btn btn-warning mr-2"
-                      onClick={() => this.handleEditDonation(product)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => this.handleDeleteDonation(product.id)}
-                    >
-                      Excluir
-                    </button>
+              <div className="row">
+                {productData.map((product) => (
+                  <div key={product.id} className="col-lg-4 mb-4">
+                    <div className="card h-100">
+                      <img src={product.photoUrl} className="card-img-top" alt="Product" />
+                      <div className="card-body">
+                        <h5 className="card-title">{product.name}</h5>
+                        <p className="card-text">{product.description}</p>
+                        <p className="card-text">Contato: {product.contactNumber}</p>
+                      </div>
+                      <div className="card-footer">
+                        <button
+                          className="btn btn-warning mr-2"
+                          onClick={() => this.handleEditDonation(product)}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => this.handleDeleteDonation(product.id)}
+                        >
+                          Excluir
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
         </div>
+
+        {/* Modal de Edição */}
+        {isEditingModalOpen && (
+          <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Editar Doação</h5>
+                  <button type="button" className="close" onClick={this.closeEditModal}>
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <form>
+                    <div className="form-group">
+                      <label htmlFor="editName">Nome</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="editName"
+                        value={this.state.name}
+                        onChange={(e) => this.handleChange(e, 'name')}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="editDescription">Descrição</label>
+                      <textarea
+                        className="form-control"
+                        id="editDescription"
+                        rows="3"
+                        value={this.state.description}
+                        onChange={(e) => this.handleChange(e, 'description')}
+                      ></textarea>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="editContactNumber">Número de Contato</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="editContactNumber"
+                        value={this.state.contactNumber}
+                        onChange={(e) => this.handleChange(e, 'contactNumber')}
+                      />
+                    </div>
+                    {/* Adicione mais campos conforme necessário */}
+                  </form>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={this.closeEditModal}
+                  >
+                    Fechar
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.handleEditSubmit}
+                  >
+                    Salvar Alterações
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     );
   }
-}
+}    
