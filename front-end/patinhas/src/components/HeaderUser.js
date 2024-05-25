@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from './logo.png'; // Importe sua logo utilizando o caminho correto
+import logo from './logo.png'; 
 
 const HeaderUser = ({ handleLogout }) => {
   return (

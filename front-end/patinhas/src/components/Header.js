@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import logo from './logo.png'; // Importe sua logo utilizando o caminho correto
+import logo from './logo.png'; 
 
 function Header() {
   return (

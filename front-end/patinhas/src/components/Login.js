@@ -12,7 +12,6 @@ function Login() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Verifica se o usuário já está autenticado e redireciona para /homeuser
         const user = JSON.parse(localStorage.getItem('user'));
         if (user) {
             navigate('/homeuser', { state: { user } });

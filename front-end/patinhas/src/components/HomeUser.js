@@ -59,14 +59,13 @@ export default class HomeUser extends Component {
     });
   };
 
-
   handleDeleteDonation = async (donationId) => {
     try {
       this.setState({ isLoading: true });
       await axios.delete(`http://localhost:3001/delete/donations/${donationId}`);
       const user = JSON.parse(localStorage.getItem('user'));
       const userId = user.id;
-      await this.handleGetUserDonations(userId); // Atualiza a lista de produtos após a exclusão
+      await this.handleGetUserDonations(userId); 
       this.setState({ isLoading: false });
     } catch (error) {
       console.error('Erro ao deletar doação:', error);
@@ -105,13 +104,10 @@ export default class HomeUser extends Component {
         description,
         contactNumber,
       });
-      // Atualize a lista de doações após a edição bem-sucedida
       const user = JSON.parse(localStorage.getItem('user'));
       const userId = user.id;
       await this.handleGetUserDonations(userId);
-      // Feche o modal de edição
       this.closeEditModal();
-      // Limpe os campos do formulário de edição
       this.clearForm();
     } catch (error) {
       console.error('Erro ao editar doação:', error);

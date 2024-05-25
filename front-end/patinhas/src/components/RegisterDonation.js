@@ -35,7 +35,7 @@ export default class RegisterDonation extends Component {
     formData.append('photoUrl', photoUrl);
     formData.append('description', description);
     formData.append('contactNumber', contactNumber);
-    formData.append('userId', userId.toString()); // Converte para string
+    formData.append('userId', userId.toString()); 
 
     try {
       const response = await axios.post('http://localhost:3001/register/donations', formData, {
