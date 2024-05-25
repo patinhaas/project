@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Home() {
@@ -8,11 +8,13 @@ function Home() {
     date: '',
     ongName: ''
   });
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDonation, setSelectedDonation] = useState(null);
 
   useEffect(() => {
     async function fetchDonations() {
       try {
-        const response = await fetch('http://localhost:3001/listAll/api/donations'); // Rota para obter doações
+        const response = await fetch('http://localhost:3001/listAll/api/donations'); 
         const data = await response.json();
         setDonations(data);
       } catch (error) {
@@ -21,7 +23,7 @@ function Home() {
     }
 
     fetchDonations();
-  }, []); // Executa apenas uma vez após a montagem do componente
+  }, []);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -34,12 +36,22 @@ function Home() {
   const handleFilterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/donations?date=${filterCriteria.date}&ongName=${filterCriteria.ongName}`); // Rota para filtrar doações
+      const response = await fetch(`/api/donations?date=${filterCriteria.date}&ongName=${filterCriteria.ongName}`); 
       const data = await response.json();
       setDonations(data);
     } catch (error) {
       console.error('Erro ao filtrar doações:', error);
     }
+  };
+
+  const handleShowModal = (donation) => {
+    setSelectedDonation(donation);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedDonation(null);
   };
 
   return (
@@ -69,7 +81,7 @@ function Home() {
               <div className="card-body">
                 <h5 className="card-title">{donation.name}</h5>
                 <p className="card-text">{donation.description}</p>
-                <Link to={`/donations/${donation.id}`} className="btn btn-primary">Detalhes</Link>
+                <Button variant="primary" onClick={() => handleShowModal(donation)}>Detalhes</Button>
               </div>
             </div>
           </div>
@@ -82,6 +94,29 @@ function Home() {
         <h2>Parceiros</h2>
         <p>Aqui você pode adicionar informações sobre como as pessoas podem ajudar ou sobre seus parceiros.</p>
       </div>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Detalhes da Doação</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedDonation && (
+            <>
+              <h5>{selectedDonation.name}</h5>
+              <p>{selectedDonation.description}</p>
+              <img src={selectedDonation.image} alt="Donation" className="img-fluid" />
+              <p>Data: {selectedDonation.date}</p>
+              <p>ONG: {selectedDonation.ongName}</p>
+              {/* Adicione mais detalhes conforme necessário */}
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Fechar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
