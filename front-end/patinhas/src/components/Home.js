@@ -14,7 +14,7 @@ function Home() {
   useEffect(() => {
     async function fetchDonations() {
       try {
-        const response = await fetch('http://localhost:3001/listAll/api/donations'); 
+        const response = await fetch('http://localhost:3001/listAll/api/donations');
         const data = await response.json();
         setDonations(data);
       } catch (error) {
@@ -36,7 +36,7 @@ function Home() {
   const handleFilterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/donations?date=${filterCriteria.date}&ongName=${filterCriteria.ongName}`); 
+      const response = await fetch(`/api/donations?date=${filterCriteria.date}&ongName=${filterCriteria.ongName}`);
       const data = await response.json();
       setDonations(data);
     } catch (error) {
@@ -52,6 +52,10 @@ function Home() {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedDonation(null);
+  };
+
+  const handleImageError = (event) => {
+    event.target.src = 'fallback-image-url.jpg'; // Coloque aqui a URL da imagem de fallback
   };
 
   return (
@@ -77,7 +81,12 @@ function Home() {
         {donations.map((donation) => (
           <div key={donation.id} className="col">
             <div className="card">
-              <img src={donation.image} className="card-img-top" alt="Donation" />
+              <img 
+                src={`http://localhost:3001${donation.photoUrl}`} 
+                className="card-img-top" 
+                alt="Donation" 
+                onError={handleImageError}
+              />
               <div className="card-body">
                 <h5 className="card-title">{donation.name}</h5>
                 <p className="card-text">{donation.description}</p>
@@ -104,10 +113,14 @@ function Home() {
             <>
               <h5>{selectedDonation.name}</h5>
               <p>{selectedDonation.description}</p>
-              <img src={selectedDonation.image} alt="Donation" className="img-fluid" />
+              <img 
+                src={`http://localhost:3001${selectedDonation.photoUrl}`} 
+                alt="Donation" 
+                className="img-fluid" 
+                onError={handleImageError}
+              />
               <p>Data: {selectedDonation.date}</p>
               <p>ONG: {selectedDonation.ongName}</p>
-              {/* Adicione mais detalhes conforme necessário */}
             </>
           )}
         </Modal.Body>

@@ -10,6 +10,7 @@ const upload = multer({ dest: 'uploads/' }); // Diretório onde as imagens serã
 const prisma = new PrismaClient();
 const app = express();
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
@@ -145,27 +146,27 @@ app.delete('/delete/user/:id', async (req, res) => {
 // Rota para criar uma doação
 app.post('/register/donations', upload.single('photoUrl'), async (req, res) => {
   const { name, description, contactNumber, userId } = req.body;
-  const photoUrl = req.file ? req.file.path : null; // Caminho da foto salva
+  const photoUrl = req.file ? `/uploads/${req.file.filename}` : null; // Caminho da foto salva
 
   try {
-      if (!name || !description || !contactNumber || !userId) {
-          return res.status(400).json({ msg: 'Todos os campos são obrigatórios.' });
-      }
+    if (!name || !description || !contactNumber || !userId) {
+      return res.status(400).json({ msg: 'Todos os campos são obrigatórios.' });
+    }
 
-      const donation = await prisma.donation.create({
-          data: {
-              name,
-              photoUrl,
-              description,
-              contactNumber,
-              userId: parseInt(userId),
-          },
-      });
+    const donation = await prisma.donation.create({
+      data: {
+        name,
+        photoUrl,
+        description,
+        contactNumber,
+        userId: parseInt(userId),
+      },
+    });
 
-      res.status(200).json({ msg: 'Doação cadastrada com sucesso', donation });
+    res.status(200).json({ msg: 'Doação cadastrada com sucesso', donation });
   } catch (error) {
-      console.error('Erro ao cadastrar doação:', error);
-      res.status(500).json({ msg: 'Erro ao cadastrar doação' });
+    console.error('Erro ao cadastrar doação:', error);
+    res.status(500).json({ msg: 'Erro ao cadastrar doação' });
   }
 });
 
