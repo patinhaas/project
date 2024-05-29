@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Login() {
+function Login({ setIsLoggedIn }) {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -10,13 +10,6 @@ function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user) {
-            navigate('/homeuser', { state: { user } });
-        }
-    }, [navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,7 +36,7 @@ function Login() {
             const data = await response.json();
             if (response.ok) {
                 localStorage.setItem('user', JSON.stringify(data.user));
-                setLoading(false);
+                setIsLoggedIn(true); // Atualiza o estado de autenticação
                 navigate('/homeuser', { state: { user: data.user } });
             } else {
                 if (response.status === 404) {
@@ -53,10 +46,10 @@ function Login() {
                 } else {
                     setError(data.msg || 'Erro ao fazer login.');
                 }
-                setLoading(false);
             }
         } catch (error) {
             setError('Erro ao fazer login. Por favor, tente novamente mais tarde.');
+        } finally {
             setLoading(false);
         }
     };

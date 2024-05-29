@@ -28,24 +28,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/homeuser"
-            element={isLoggedIn ? <HomeUser /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/profile"
-            element={isLoggedIn ? <Profile /> : <Navigate to="/profile" />}
-          />
-          <Route
-            path="/profile"
-            element={isLoggedIn ? <Profile /> : <Navigate to="/profile" />}
-          />
-          <Route
-            path="/registerDonation"
-            element={isLoggedIn ? <RegisterDonation /> : <Navigate to="/registerDonation" />}
-          />
-
+          <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+          <Route path="/homeuser" element={isLoggedIn ? <HomeUser /> : <Navigate to="/login" />} />
+          <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
+          <Route path="/registerDonation" element={isLoggedIn ? <RegisterDonation /> : <Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>
