@@ -55,7 +55,7 @@ function Home() {
   };
 
   const handleImageError = (event) => {
-    event.target.src = 'fallback-image-url.jpg'; // Coloque aqui a URL da imagem de fallback
+    event.target.src = 'fallback-image-url.jpg'; 
   };
 
   return (

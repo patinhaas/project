@@ -21,9 +21,14 @@ export default class HomeUser extends Component {
 
   componentDidMount() {
     const user = JSON.parse(localStorage.getItem('user'));
-    const userId = user.id;
-    this.handleGetUserDonations(userId);
+    if (user && user.id) {
+      const userId = user.id;
+      this.handleGetUserDonations(userId);
+    } else {
+      console.error('Erro: Nenhum usuário encontrado no localStorage ou falta a propriedade "id".');
+    }
   }
+  
 
   handleChange = (event, fieldName) => {
     const { value } = event.target;
@@ -65,7 +70,7 @@ export default class HomeUser extends Component {
       await axios.delete(`http://localhost:3001/delete/donations/${donationId}`);
       const user = JSON.parse(localStorage.getItem('user'));
       const userId = user.id;
-      await this.handleGetUserDonations(userId); 
+      await this.handleGetUserDonations(userId);
       this.setState({ isLoading: false });
     } catch (error) {
       console.error('Erro ao deletar doação:', error);
@@ -114,8 +119,13 @@ export default class HomeUser extends Component {
     }
   };
 
+ 
+
   render() {
     const { productData, isLoading, isEditingModalOpen } = this.state;
+    const handleImageError = (event) => {
+      event.target.src = 'fallback-image-url.jpg'; 
+    };
 
     return (
       <div className="container mt-5">
@@ -137,7 +147,12 @@ export default class HomeUser extends Component {
                 {productData.map((product) => (
                   <div key={product.id} className="col-lg-4 mb-4">
                     <div className="card h-100">
-                      <img src={product.photoUrl} className="card-img-top" alt="Product" />
+                      <img
+                        src={`http://localhost:3001${product.photoUrl}`}
+                        className="card-img-top"
+                        alt="Donation"
+                        onError={handleImageError}
+                      />
                       <div className="card-body">
                         <h5 className="card-title">{product.name}</h5>
                         <p className="card-text">{product.description}</p>
