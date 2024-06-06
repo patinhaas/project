@@ -9,6 +9,7 @@ import Home from './components/Home';
 import HomeUser from './components/HomeUser';
 import Profile from './components/Profile';
 import RegisterDonation from './components/RegisterDonation';
+import Footer from './components/Footer';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -33,6 +34,7 @@ function App() {
           <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
           <Route path="/registerDonation" element={isLoggedIn ? <RegisterDonation /> : <Navigate to="/login" />} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );

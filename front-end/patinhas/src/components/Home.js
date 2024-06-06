@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import imgAbout from '../imgs/highfive.webp'; 
+import imgAbout from '../imgs/highfive.webp';
 
 function Home() {
   const [donations, setDonations] = useState([]);
@@ -62,32 +62,33 @@ function Home() {
   return (
 
     <div className="container mt-5">
-    <div className="row">
-      <div className="col-md-6 d-flex align-items-center">
-        <div className="p-4">
-          <h2 style={{ fontSize: '2.5rem', color: '#333', textAlign: 'center', fontFamily: 'Oswald, sans-serif' }}>Patinhas</h2>
-          <p style={{ fontSize: '1.1rem', color: '#666', textAlign: 'center', fontFamily: 'Roboto, sans-serif' }}>O Patinhas é uma plataforma dedicada a conectar corações generosos com a missão vital das ONGs de animais. Aqui, as ONGs têm a oportunidade de registrar suas necessidades específicas, desde suprimentos essenciais até tratamentos veterinários urgentes. Com apenas alguns cliques, estas organizações podem comunicar suas necessidades com clareza e eficácia.</p>
+      <div className="row">
+        <div className="col-md-6 d-flex align-items-center">
+          <div className="p-4">
+            <h2 style={{ fontSize: '2.5rem', color: '#333', textAlign: 'center', fontFamily: 'Oswald, sans-serif' }}>Patinhas</h2>
+            <p style={{ fontSize: '1.1rem', color: '#666', textAlign: 'center', fontFamily: 'Roboto, sans-serif' }}>O Patinhas é uma plataforma dedicada a conectar corações generosos com a missão vital das ONGs de animais. Aqui, as ONGs têm a oportunidade de registrar suas necessidades específicas, desde suprimentos essenciais até tratamentos veterinários urgentes. Com apenas alguns cliques, estas organizações podem comunicar suas necessidades com clareza e eficácia.</p>
+          </div>
+        </div>
+        <div className="col-md-6 d-flex justify-content-center align-items-center">
+          <img src={imgAbout} alt="Imagem Projeto" className="img-fluid" style={{ maxWidth: '100%', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
         </div>
       </div>
-      <div className="col-md-6 d-flex justify-content-center align-items-center">
-        <img src={imgAbout} alt="Imagem Projeto" className="img-fluid" style={{ maxWidth: '100%', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
-      </div>
-    </div>
- 
+
       <hr className="my-5" />
-      <h1 className="mb-4">Doações</h1>
+
+      <h1 className="mb-4 text-center">Doações</h1>
       <form className="mb-4" onSubmit={handleFilterSubmit}>
-        <div className="row">
+        <div className="row justify-content-center">
           <div className="col-md-3">
             <label htmlFor="date" className="form-label">Data:</label>
             <input type="date" className="form-control" id="date" name="date" value={filterCriteria.date} onChange={handleFilterChange} />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label htmlFor="ongName" className="form-label">Nome da ONG:</label>
             <input type="text" className="form-control" id="ongName" name="ongName" value={filterCriteria.ongName} onChange={handleFilterChange} />
           </div>
-          <div className="col-md-2">
-            <button type="submit" className="btn btn-primary mt-4">Filtrar</button>
+          <div className="col-md-2 align-self-end">
+            <button type="submit" className="btn btn-primary mt-md-0 mt-2">Filtrar</button>
           </div>
         </div>
       </form>
@@ -95,7 +96,7 @@ function Home() {
       <div className="row row-cols-1 row-cols-md-3 g-4">
         {donations.map((donation) => (
           <div key={donation.id} className="col">
-            <div className="card">
+            <div className="card shadow-sm">
               <img
                 src={`http://localhost:3001${donation.photoUrl}`}
                 className="card-img-top"
@@ -103,7 +104,7 @@ function Home() {
                 onError={handleImageError}
               />
               <div className="card-body">
-                <h5 className="card-title">{donation.name}</h5>
+                <h5 className="card-title" style={{ fontSize: '1.2rem' }}>{donation.name}</h5>
                 <p className="card-text">{donation.description}</p>
                 <Button variant="primary" onClick={() => handleShowModal(donation)}>Detalhes</Button>
               </div>
