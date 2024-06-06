@@ -55,12 +55,12 @@ function Login({ setIsLoggedIn }) {
     };
 
     return (
-        <div className="container-fluid" style={{ backgroundColor: '#1eadef', height: '100vh' }}>
+        <div className="container-fluid" style={{ backgroundColor: '#A6D6D5', height: '100vh' }}>
             <div className="row justify-content-center align-items-center" style={{ height: '100%' }}>
                 <div className="col-md-6 col-lg-4">
-                    <div className="card shadow-lg" style={{ backgroundColor: '#ffffff' }}>
+                    <div className="card shadow-lg" style={{ backgroundColor: '#FFFFFF', borderColor: '#907FA4' }}>
                         <div className="card-body p-5">
-                            <h2 className="card-title text-center mb-4" style={{ color: '#1eadef' }}>Login</h2>
+                            <h2 className="card-title text-center mb-4" style={{ color: '#907FA4' }}>Login</h2>
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
                                     <label htmlFor="email" className="form-label">Email:</label>
@@ -92,7 +92,7 @@ function Login({ setIsLoggedIn }) {
                                     <button
                                         type="submit"
                                         className="btn btn-primary btn-lg"
-                                        style={{ backgroundColor: '#f1511b', borderColor: '#f1511b' }}
+                                        style={{ backgroundColor: '#907FA4', borderColor: '#907FA4' }}
                                         disabled={loading}
                                     >
                                         {loading ? 'Carregando...' : 'Entrar'}
@@ -100,7 +100,7 @@ function Login({ setIsLoggedIn }) {
                                 </div>
                             </form>
                             {error && <p className="text-danger mt-3 text-center">{error}</p>}
-                            <p className="mt-3 text-center">Não tem uma conta? <a href="/cadastro">Cadastrar-se</a></p>
+                            <p className="mt-3 text-center">Não tem uma conta? <a href="/cadastro" style={{ color: '#907FA4' }}>Cadastrar-se</a></p>
                         </div>
                     </div>
                 </div>
