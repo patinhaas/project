@@ -102,17 +102,18 @@ function Home() {
         <div className="row row-cols-1 row-cols-md-3 g-4">
             {donations.map((donation) => (
                 <div key={donation.id} className="col">
-                    <div className="card shadow-sm h-100">
+                    <div className="card shadow-sm">
                         <img
                             src={`http://localhost:3001${donation.photoUrl}`}
                             className="card-img-top"
                             alt="Donation"
                             onError={handleImageError}
                         />
-                        <div className="card-body d-flex flex-column">
+                        <div className="card-body">
                             <h5 className="card-title" style={{ fontSize: '1.2rem', color: '#907FA4' }}>{donation.name}</h5>
                             <p className="card-text">{donation.description}</p>
-                            <Button variant="primary" onClick={() => handleShowModal(donation)} style={{ backgroundColor: '#907FA4', borderColor: '#907FA4', marginTop: 'auto' }}>Detalhes</Button>
+                            <p className="card-text">Data de Criação: {new Date(donation.createdAt).toLocaleDateString()}</p> {/* Mostra a data de criação */}
+                            <Button variant="primary" onClick={() => handleShowModal(donation)} style={{ backgroundColor: '#907FA4', borderColor: '#907FA4' }}>Detalhes</Button>
                         </div>
                     </div>
                 </div>

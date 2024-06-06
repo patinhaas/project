@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiMail, FiLock, FiUser, FiMapPin, FiPhone } from 'react-icons/fi'; // Importando ícones
+import { FiMail, FiLock, FiUser } from 'react-icons/fi'; // Importando ícones
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Profile() {

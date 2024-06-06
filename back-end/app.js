@@ -170,6 +170,47 @@ app.post('/register/donations', upload.single('photoUrl'), async (req, res) => {
   }
 });
 
+// Rota para buscar doações com base em critérios de filtro
+app.get('/api/donations', async (req, res) => {
+  const { name, description, date, ongName } = req.query;
+  const where = {};
+
+  if (name) {
+    where.name = {
+      contains: name,
+      mode: 'insensitive',
+    };
+  }
+
+  if (description) {
+    where.description = {
+      contains: description,
+      mode: 'insensitive',
+    };
+  }
+
+  if (date) {
+    where.date = date;
+  }
+
+  if (ongName) {
+    where.ongName = {
+      contains: ongName,
+      mode: 'insensitive',
+    };
+  }
+
+  try {
+    const donations = await prisma.donation.findMany({
+      where,
+    });
+    res.status(200).json(donations);
+  } catch (error) {
+    console.error('Erro ao buscar doações:', error);
+    res.status(500).json({ msg: 'Erro ao buscar doações' });
+  }
+});
+
 // Rota para listar todas as doações de um usuário
 app.get('/list/donations/:userId', async (req, res) => {
   const userId = parseInt(req.params.userId); // Convertendo o ID do usuário para inteiro
