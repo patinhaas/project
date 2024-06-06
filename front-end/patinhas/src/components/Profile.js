@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiMail, FiLock, FiUser, FiMapPin, FiPhone } from 'react-icons/fi'; // Importando ícones
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Profile() {
@@ -99,49 +100,60 @@ function Profile() {
     if (error) return <p className="text-danger">{error}</p>;
 
     return (
-        <div className="container">
-            <h2 className="mt-4">Perfil</h2>
-            {user && (
-                <form onSubmit={handleUpdate}>
-                    <div className="mb-3">
-                        <label htmlFor="name" className="form-label">Nome</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="name"
-                            name="name"
-                            value={user.name}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email</label>
-                        <input
-                            type="email"
-                            className="form-control"
-                            id="email"
-                            name="email"
-                            value={user.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">Nova Senha (opcional)</label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            id="password"
-                            name="password"
-                            value={user.password || ''}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <button type="submit" className="btn btn-primary" disabled={loading}>Atualizar</button>
-                    <button type="button" className="btn btn-danger ms-2" onClick={handleDelete} disabled={loading}>Deletar Conta</button>
-                </form>
-            )}
+        <div className="container mt-5">
+            <h2 className="mb-4">Perfil da ONG</h2>
+            <div className="row">
+                <div className="col-md-6">
+                    <form onSubmit={handleUpdate}>
+                        <div className="mb-3">
+                            <label htmlFor="name" className="form-label">Nome da ONG</label>
+                            <div className="input-group">
+                                <span className="input-group-text"><FiUser /></span>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="name"
+                                    name="name"
+                                    value={user.name}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="email" className="form-label">Email da ONG</label>
+                            <div className="input-group">
+                                <span className="input-group-text"><FiMail /></span>
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    id="email"
+                                    name="email"
+                                    value={user.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="password" className="form-label">Nova Senha (opcional)</label>
+                            <div className="input-group">
+                                <span className="input-group-text"><FiLock /></span>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    id="password"
+                                    name="password"
+                                    value={user.password || ''}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+                        <button type="submit" className="btn btn-primary me-2" style={{ backgroundColor: '#907FA4', borderColor: '#907FA4' }} disabled={loading}>Atualizar</button>
+                        <button type="button" className="btn btn-danger" style={{ backgroundColor: '#A6D6D5', borderColor: '#A6D6D5' }} onClick={handleDelete} disabled={loading}>Deletar Conta</button>
+                    </form>
+                </div>
+            </div>
         </div>
     );
 }

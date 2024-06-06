@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { FaCamera } from 'react-icons/fa'; // Importando ícone para a foto
 import 'bootstrap/dist/css/bootstrap.min.css';
+import rulesImage from '../imgs/highfive.webp';
 
 export default class RegisterDonation extends Component {
   constructor(props) {
@@ -10,7 +12,8 @@ export default class RegisterDonation extends Component {
       photoUrl: null,
       description: '',
       contactNumber: '',
-      successMessage: ''
+      successMessage: '',
+      errorMessage: ''
     };
   }
 
@@ -46,6 +49,7 @@ export default class RegisterDonation extends Component {
       console.log('Doação cadastrada com sucesso:', response.data);
       this.setState({ 
         successMessage: 'Doação cadastrada com sucesso!',
+        errorMessage: '',
         name: '',
         photoUrl: null,
         description: '',
@@ -53,20 +57,35 @@ export default class RegisterDonation extends Component {
       });
     } catch (error) {
       console.error('Erro ao cadastrar doação:', error);
+      this.setState({ 
+        errorMessage: 'Erro ao cadastrar doação. Por favor, tente novamente.',
+        successMessage: ''
+      });
     }
   };
 
   render() {
-    const { name, description, contactNumber, successMessage } = this.state;
+    const { name, description, contactNumber, successMessage, errorMessage } = this.state;
 
     return (
       <div className="container mt-4">
         <div className="row justify-content-center">
-          <div className="col-md-8">
-            <div className="card shadow">
-              <h5 className="card-header bg-primary text-white">Cadastrar Nova Doação</h5>
+          <div className="col-md-6">
+            <div className="card shadow p-4" style={{ borderRadius: '15px', border: 'none', backgroundColor: '#f8f9fa' }}>
+              <h5 className="card-header bg-primary text-white text-center" style={{ borderRadius: '10px 10px 0 0', border: 'none' }}>Cadastrar Nova Doação</h5>
               <div className="card-body">
                 {successMessage && <div className="alert alert-success">{successMessage}</div>}
+                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+                <div className="mb-4">
+                  <img src={rulesImage} alt="Regras de Cadastro" className="img-fluid" style={{ borderRadius: '10px' }} />
+                </div>
+                <p className="mb-4">Antes de prosseguir com o cadastro da doação, por favor, leia atentamente nossas regras:</p>
+                <ul className="mb-4">
+                  <li>Todas as doações devem ser legais e não infringir leis locais ou internacionais.</li>
+                  <li>A descrição do produto deve ser clara e precisa, sem informações falsas.</li>
+                  <li>As fotos devem representar fielmente o produto doado.</li>
+                  <li>Forneça um número de contato válido para que possamos entrar em contato se necessário.</li>
+                </ul>
                 <form onSubmit={this.handleSubmit}>
                   <div className="mb-3">
                     <label htmlFor="name" className="form-label">Nome do Produto:</label>
@@ -78,13 +97,18 @@ export default class RegisterDonation extends Component {
                   </div>
                   <div className="mb-3">
                     <label htmlFor="photo" className="form-label">Foto do Produto:</label>
-                    <input type="file" accept="image/*" className="form-control" id="photo" onChange={this.handleFileChange} required />
+                    <div className="input-group">
+                      <input type="file" accept="image/*" className="form-control" id="photo" onChange={this.handleFileChange} required />
+                      <label htmlFor="photo" className="input-group-text" style={{ backgroundColor: '#A6D6D5', color: '#333', cursor: 'pointer', borderRadius: '0 10px 10px 0' }}><FaCamera /></label>
+                    </div>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="contactNumber" className="form-label">Número de Contato:</label>
                     <input type="text" className="form-control" id="contactNumber" name="contactNumber" value={contactNumber} onChange={this.handleChange} required />
                   </div>
-                  <button type="submit" className="btn btn-primary" style={{ backgroundColor: '#80cc28', borderColor: '#80cc28' }}>Criar Produto</button>
+                  <div className="text-center">
+                    <button type="submit" className="btn btn-primary" style={{ backgroundColor: '#A6D6D5', borderColor: '#A6D6D5', borderRadius: '10px', padding: '10px 30px' }}>Criar Produto</button>
+                  </div>
                 </form>
               </div>
             </div>
