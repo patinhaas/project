@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import imgAbout from '../imgs/highfive.webp'; 
 
 function Home() {
   const [donations, setDonations] = useState([]);
@@ -55,11 +56,25 @@ function Home() {
   };
 
   const handleImageError = (event) => {
-    event.target.src = 'fallback-image-url.jpg'; 
+    event.target.src = 'fallback-image-url.jpg';
   };
 
   return (
+
     <div className="container mt-5">
+    <div className="row">
+      <div className="col-md-6 d-flex align-items-center">
+        <div className="p-4">
+          <h2 style={{ fontSize: '2.5rem', color: '#333', textAlign: 'center', fontFamily: 'Oswald, sans-serif' }}>Patinhas</h2>
+          <p style={{ fontSize: '1.1rem', color: '#666', textAlign: 'center', fontFamily: 'Roboto, sans-serif' }}>O Patinhas é uma plataforma dedicada a conectar corações generosos com a missão vital das ONGs de animais. Aqui, as ONGs têm a oportunidade de registrar suas necessidades específicas, desde suprimentos essenciais até tratamentos veterinários urgentes. Com apenas alguns cliques, estas organizações podem comunicar suas necessidades com clareza e eficácia.</p>
+        </div>
+      </div>
+      <div className="col-md-6 d-flex justify-content-center align-items-center">
+        <img src={imgAbout} alt="Imagem Projeto" className="img-fluid" style={{ maxWidth: '100%', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+      </div>
+    </div>
+ 
+      <hr className="my-5" />
       <h1 className="mb-4">Doações</h1>
       <form className="mb-4" onSubmit={handleFilterSubmit}>
         <div className="row">
@@ -81,10 +96,10 @@ function Home() {
         {donations.map((donation) => (
           <div key={donation.id} className="col">
             <div className="card">
-              <img 
-                src={`http://localhost:3001${donation.photoUrl}`} 
-                className="card-img-top" 
-                alt="Donation" 
+              <img
+                src={`http://localhost:3001${donation.photoUrl}`}
+                className="card-img-top"
+                alt="Donation"
                 onError={handleImageError}
               />
               <div className="card-body">
@@ -113,10 +128,10 @@ function Home() {
             <>
               <h5>{selectedDonation.name}</h5>
               <p>{selectedDonation.description}</p>
-              <img 
-                src={`http://localhost:3001${selectedDonation.photoUrl}`} 
-                alt="Donation" 
-                className="img-fluid" 
+              <img
+                src={`http://localhost:3001${selectedDonation.photoUrl}`}
+                alt="Donation"
+                className="img-fluid"
                 onError={handleImageError}
               />
               <p>Data: {selectedDonation.date}</p>
