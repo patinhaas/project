@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../imgs/logo.png'; 
+import logo from '../imgs/logo.png';
 
 const HeaderUser = ({ handleLogout }) => {
   return (
-    <header className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: '#80cc28', maxHeight: '8vh' }}>
+    <header className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: '#ef9c4e', maxHeight: '8vh' }}>
       <div className="container">
         <Link className="navbar-brand" to="/">
-          <img src={logo} alt="Logo" className="logo img-fluid" style={{ maxHeight: '100%', width: 'auto' }} />
+          <img src={logo} alt="Logo" className="logo img-fluid" style={{ maxHeight: '8vh', width: 'auto' }} />
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
