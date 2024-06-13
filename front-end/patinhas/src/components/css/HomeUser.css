@@ -1,0 +1,14 @@
+/* HomeUser.css */
+.custom-edit-btn {
+    background-color: #007bff; /* Cor de fundo azul para o botão Editar */
+    color: #fff; /* Cor do texto branco para o botão Editar */
+    border-color: #007bff; /* Cor da borda azul para o botão Editar */
+    margin-right: 10px; /* Espaçamento à direita entre os botões */
+  }
+  
+  .custom-delete-btn {
+    background-color: #dc3545; /* Cor de fundo vermelha para o botão Excluir */
+    color: #fff; /* Cor do texto branco para o botão Excluir */
+    border-color: #dc3545; /* Cor da borda vermelha para o botão Excluir */
+  }
+  

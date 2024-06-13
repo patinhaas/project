@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './css/HomeUser.css'; // Importa o arquivo CSS
 
 export default class HomeUser extends Component {
   constructor(props) {
@@ -89,17 +90,14 @@ export default class HomeUser extends Component {
     });
   };
 
-  // Método para abrir o modal de edição
   openEditModal = () => {
     this.setState({ isEditingModalOpen: true });
   };
 
-  // Método para fechar o modal de edição
   closeEditModal = () => {
     this.setState({ isEditingModalOpen: false });
   };
 
-  // Método para lidar com a submissão do formulário de edição
   handleEditSubmit = async () => {
     const { productId, name, description, contactNumber } = this.state;
     try {
@@ -125,7 +123,7 @@ export default class HomeUser extends Component {
     };
 
     return (
-      <div className="container mt-5" style={{ paddingBottom: '100px' }}>
+      <div className="container mt-5 pb-5"> {/* Adicionado padding-bottom */}
         <div className="row">
           <div className="col-lg-6">
             <h2 className="mb-4">Bem-vindo à Plataforma de Doações</h2>
@@ -159,18 +157,19 @@ export default class HomeUser extends Component {
                       <div className="card-footer">
                         <p className="card-text">Data de Criação: {new Date(product.createdAt).toLocaleString()}</p>
                         <button
-                          className="btn btn-warning mr-2"
+                          className="btn btn-warning mr-2 custom-edit-btn"
                           onClick={() => this.handleEditDonation(product)}
                         >
                           Editar
                         </button>
                         <button
-                          className="btn btn-danger"
+                          className="btn btn-danger custom-delete-btn"
                           onClick={() => this.handleDeleteDonation(product.id)}
                         >
                           Excluir
                         </button>
                       </div>
+
                     </div>
                   </div>
                 ))}
@@ -179,7 +178,6 @@ export default class HomeUser extends Component {
           </div>
         </div>
 
-        {/* Modal de Edição */}
         {isEditingModalOpen && (
           <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
             <div className="modal-dialog" role="document">
@@ -222,7 +220,6 @@ export default class HomeUser extends Component {
                         onChange={(e) => this.handleChange(e, 'contactNumber')}
                       />
                     </div>
-                    {/* Adicione mais campos conforme necessário */}
                   </form>
                 </div>
                 <div className="modal-footer">
@@ -245,7 +242,6 @@ export default class HomeUser extends Component {
             </div>
           </div>
         )}
-
       </div>
     );
   }

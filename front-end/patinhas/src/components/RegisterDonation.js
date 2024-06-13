@@ -68,7 +68,7 @@ export default class RegisterDonation extends Component {
     const { name, description, contactNumber, successMessage, errorMessage } = this.state;
 
     return (
-      <div className="container mt-4">
+      <div className="container mt-4 mb-5"> {/* Adicionado mb-5 para espaçamento na parte inferior */}
         <div className="row justify-content-center">
           <div className="col-md-6">
             <div className="card shadow p-4" style={{ borderRadius: '15px', border: 'none', backgroundColor: '#f8f9fa' }}>
