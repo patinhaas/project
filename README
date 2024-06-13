@@ -1,4 +1,4 @@
-#Patinhas 
+# Patinhas 
 ## Recursos Utilizados
 
 - **bcrypt**: Utilizado para criar um hash seguro para as senhas dos usuários, garantindo maior segurança.
