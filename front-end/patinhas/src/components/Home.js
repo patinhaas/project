@@ -14,18 +14,18 @@ function Home() {
   const [selectedDonation, setSelectedDonation] = useState(null);
 
   useEffect(() => {
-    async function fetchDonations() {
-      try {
-        const response = await fetch('http://localhost:3001/listAll/api/donations');
-        const data = await response.json();
-        setDonations(data);
-      } catch (error) {
-        console.error('Erro ao obter doações:', error);
-      }
-    }
-
-    fetchDonations();
+    fetchDonations(); // Fetch initial donations when component mounts
   }, []);
+
+  const fetchDonations = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/listAll/api/donations');
+      const data = await response.json();
+      setDonations(data);
+    } catch (error) {
+      console.error('Erro ao obter doações:', error);
+    }
+  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -38,7 +38,8 @@ function Home() {
   const handleFilterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/donations?date=${filterCriteria.date}&ongName=${filterCriteria.ongName}`);
+      const url = `/api/donations?date=${filterCriteria.date}&ongName=${filterCriteria.ongName}`;
+      const response = await fetch(url);
       const data = await response.json();
       setDonations(data);
     } catch (error) {
@@ -100,30 +101,34 @@ function Home() {
       </form>
 
       <div className="row row-cols-1 row-cols-md-3 g-4">
-        {donations.map((donation) => (
-          <div key={donation.id} className="col">
-            <div className="card">
-              <img
-                src={`http://localhost:3001${donation.photoUrl}`}
-                className="card-img-top"
-                alt="Donation"
-                style={{ maxHeight: '200px' }}
-                onError={handleImageError}
-              />
-              <div className="card-body">
-                <h5 className="card-title" style={{ fontSize: '1.2rem', color: '#907FA4' }}>{donation.name}</h5>
-                <p className="card-text">{donation.description}</p>
-                <p className="card-text"><small className="text-muted">Data de Criação: {new Date(donation.createdAt).toLocaleDateString()}</small></p>
-              </div>
-              <div className="card-footer bg-transparent border-top-0">
-                <Button variant="primary" onClick={() => handleShowModal(donation)} style={{ backgroundColor: '#907FA4', borderColor: '#907FA4' }}>Detalhes</Button>
+        {donations.length > 0 ? (
+          donations.map((donation) => (
+            <div key={donation.id} className="col">
+              <div className="card">
+                <img
+                  src={`http://localhost:3001${donation.photoUrl}`}
+                  className="card-img-top"
+                  alt="Donation"
+                  style={{ maxHeight: '200px' }}
+                  onError={handleImageError}
+                />
+                <div className="card-body">
+                  <h5 className="card-title" style={{ fontSize: '1.2rem', color: '#907FA4' }}>{donation.name}</h5>
+                  <p className="card-text">{donation.description}</p>
+                  <p className="card-text"><small className="text-muted">Data de Criação: {new Date(donation.createdAt).toLocaleDateString()}</small></p>
+                </div>
+                <div className="card-footer bg-transparent border-top-0">
+                  <Button variant="primary" onClick={() => handleShowModal(donation)} style={{ backgroundColor: '#907FA4', borderColor: '#907FA4' }}>Detalhes</Button>
+                </div>
               </div>
             </div>
+          ))
+        ) : (
+          <div className="col text-center">
+            <p>Nenhum resultado encontrado.</p>
           </div>
-        ))}
+        )}
       </div>
-
-
 
       <hr className="my-5" />
 
@@ -161,4 +166,5 @@ function Home() {
     </div>
   );
 }
+
 export default Home;

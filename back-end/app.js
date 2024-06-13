@@ -172,25 +172,14 @@ app.post('/register/donations', upload.single('photoUrl'), async (req, res) => {
 
 // Rota para buscar doações com base em critérios de filtro
 app.get('/api/donations', async (req, res) => {
-  const { name, description, date, ongName } = req.query;
+  const { date, ongName } = req.query;
   const where = {};
 
-  if (name) {
-    where.name = {
-      contains: name,
-      mode: 'insensitive',
-    };
-  }
-
-  if (description) {
-    where.description = {
-      contains: description,
-      mode: 'insensitive',
-    };
-  }
-
   if (date) {
-    where.date = date;
+    where.createdAt = {
+      gte: new Date(date),
+      lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000) // Considerando um filtro para o dia todo
+    };
   }
 
   if (ongName) {
@@ -203,11 +192,14 @@ app.get('/api/donations', async (req, res) => {
   try {
     const donations = await prisma.donation.findMany({
       where,
+      orderBy: {
+        createdAt: 'desc' // Ordenando por data de criação, do mais recente para o mais antigo
+      }
     });
     res.status(200).json(donations);
   } catch (error) {
     console.error('Erro ao buscar doações:', error);
-    res.status(500).json({ msg: 'Erro ao buscar doações' });
+    res.status(500).json({ error: 'Erro ao buscar doações' });
   }
 });
 
