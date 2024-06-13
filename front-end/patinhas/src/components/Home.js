@@ -44,17 +44,23 @@ function Home() {
     }));
   };
 
-  const handleFilterSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const url = `/api/donations?date=${filterCriteria.date}&ongName=${filterCriteria.ongName}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      setDonations(data);
-    } catch (error) {
-      console.error('Erro ao filtrar doações:', error);
-    }
-  };
+const [loading, setLoading] = useState(false);
+
+const handleFilterSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true); // Set loading state to true while fetching data
+  try {
+    const url = `/api/donations?date=${filterCriteria.date}&ongName=${filterCriteria.ongName}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    setDonations(data);
+  } catch (error) {
+    console.error('Erro ao filtrar doações:', error);
+  } finally {
+    setLoading(false); // Set loading state to false after fetching data
+  }
+};
+
 
   const handleShowModal = (donation) => {
     setSelectedDonation(donation);

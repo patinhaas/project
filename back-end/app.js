@@ -170,7 +170,6 @@ app.post('/register/donations', upload.single('photoUrl'), async (req, res) => {
   }
 });
 
-// Rota para buscar doações com base em critérios de filtro
 app.get('/api/donations', async (req, res) => {
   const { date, ongName } = req.query;
   const where = {};
@@ -178,7 +177,7 @@ app.get('/api/donations', async (req, res) => {
   if (date) {
     where.createdAt = {
       gte: new Date(date),
-      lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000) // Considerando um filtro para o dia todo
+      lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000)
     };
   }
 
@@ -193,7 +192,7 @@ app.get('/api/donations', async (req, res) => {
     const donations = await prisma.donation.findMany({
       where,
       orderBy: {
-        createdAt: 'desc' // Ordenando por data de criação, do mais recente para o mais antigo
+        createdAt: 'desc'
       }
     });
     res.status(200).json(donations);
