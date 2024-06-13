@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiMail, FiLock, FiUser } from 'react-icons/fi'; // Importando ícones
+import { FiMail, FiLock, FiUser } from 'react-icons/fi';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Profile() {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState({ name: '', email: '', password: '' });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -36,6 +36,15 @@ function Profile() {
 
         fetchUser();
     }, [userId]);
+
+    useEffect(() => {
+        if (user && !user.password) {
+            setUser(prevState => ({
+                ...prevState,
+                password: ''
+            }));
+        }
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -102,7 +111,7 @@ function Profile() {
     return (
         <div className="container mt-5">
             <h2 className="mb-4">Perfil da ONG</h2>
-            <div className="row">
+            <div className="row justify-content-center">
                 <div className="col-md-6">
                     <form onSubmit={handleUpdate}>
                         <div className="mb-3">
@@ -144,13 +153,15 @@ function Profile() {
                                     className="form-control"
                                     id="password"
                                     name="password"
-                                    value={user.password || ''}
+                                    value={user.password}
                                     onChange={handleChange}
                                 />
                             </div>
                         </div>
-                        <button type="submit" className="btn btn-primary me-2" style={{ backgroundColor: '#907FA4', borderColor: '#907FA4' }} disabled={loading}>Atualizar</button>
-                        <button type="button" className="btn btn-danger" style={{ backgroundColor: '#A6D6D5', borderColor: '#A6D6D5' }} onClick={handleDelete} disabled={loading}>Deletar Conta</button>
+                        <div className="d-grid gap-2">
+                            <button type="submit" className="btn btn-primary" disabled={loading}>Atualizar</button>
+                            <button type="button" className="btn btn-danger mt-2" onClick={handleDelete} disabled={loading}>Deletar Conta</button>
+                        </div>
                     </form>
                 </div>
             </div>

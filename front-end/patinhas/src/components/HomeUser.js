@@ -28,7 +28,6 @@ export default class HomeUser extends Component {
       console.error('Erro: Nenhum usuário encontrado no localStorage ou falta a propriedade "id".');
     }
   }
-  
 
   handleChange = (event, fieldName) => {
     const { value } = event.target;
@@ -37,7 +36,7 @@ export default class HomeUser extends Component {
 
   handleImageChange = (event) => {
     this.setState({
-      photoUrl: URL.createObjectURL(event.target.files[0])
+      photoUrl: URL.createObjectURL(event.target.files[0]),
     });
   };
 
@@ -119,16 +118,14 @@ export default class HomeUser extends Component {
     }
   };
 
- 
-
   render() {
     const { productData, isLoading, isEditingModalOpen } = this.state;
     const handleImageError = (event) => {
-      event.target.src = 'fallback-image-url.jpg'; 
+      event.target.src = 'fallback-image-url.jpg';
     };
 
     return (
-      <div className="container mt-5">
+      <div className="container mt-5" style={{ paddingBottom: '100px' }}>
         <div className="row">
           <div className="col-lg-6">
             <h2 className="mb-4">Bem-vindo à Plataforma de Doações</h2>
@@ -137,50 +134,50 @@ export default class HomeUser extends Component {
             </p>
           </div>
         </div>
-       
-      <div className="row mt-5">
-        <div className="col-lg-12">
-          <h2 className="mb-4">Suas Doações</h2>
-          {isLoading ? (
-            <p>Carregando...</p>
-          ) : (
-            <div className="row">
-              {productData.map((product) => (
-                <div key={product.id} className="col-lg-4 mb-4">
-                  <div className="card h-100">
-                    <img
-                      src={`http://localhost:3001${product.photoUrl}`}
-                      className="card-img-top"
-                      alt="Donation"
-                      onError={handleImageError}
-                    />
-                    <div className="card-body">
-                      <h5 className="card-title">{product.name}</h5>
-                      <p className="card-text">{product.description}</p>
-                      <p className="card-text">Contato: {product.contactNumber}</p>
-                    </div>
-                    <div className="card-footer">
-                    <p className="card-text">Data de Criação: {new Date(product.createdAt).toLocaleString()}</p>
-                      <button
-                        className="btn btn-warning mr-2"
-                        onClick={() => this.handleEditDonation(product)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => this.handleDeleteDonation(product.id)}
-                      >
-                        Excluir
-                      </button>
+
+        <div className="row mt-5">
+          <div className="col-lg-12">
+            <h2 className="mb-4">Suas Doações</h2>
+            {isLoading ? (
+              <p>Carregando...</p>
+            ) : (
+              <div className="row">
+                {productData.map((product) => (
+                  <div key={product.id} className="col-lg-4 mb-4">
+                    <div className="card h-100">
+                      <img
+                        src={`http://localhost:3001${product.photoUrl}`}
+                        className="card-img-top"
+                        alt="Donation"
+                        onError={handleImageError}
+                      />
+                      <div className="card-body">
+                        <h5 className="card-title">{product.name}</h5>
+                        <p className="card-text">{product.description}</p>
+                        <p className="card-text">Contato: {product.contactNumber}</p>
+                      </div>
+                      <div className="card-footer">
+                        <p className="card-text">Data de Criação: {new Date(product.createdAt).toLocaleString()}</p>
+                        <button
+                          className="btn btn-warning mr-2"
+                          onClick={() => this.handleEditDonation(product)}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => this.handleDeleteDonation(product.id)}
+                        >
+                          Excluir
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
         {/* Modal de Edição */}
         {isEditingModalOpen && (
@@ -252,4 +249,4 @@ export default class HomeUser extends Component {
       </div>
     );
   }
-}    
+}

@@ -50,7 +50,7 @@ function Register() {
                 <div className="col-md-6 col-lg-4">
                     <div className="card shadow-lg" style={{ backgroundColor: '#FFFFFF', borderColor: '#907FA4' }}>
                         <div className="card-body p-5">
-                            <h2 className="card-title text-center mb-4" style={{ color: '#907FA4' }}>Cadastro de Usuário</h2>
+                            <h2 className="card-title text-center mb-4" style={{ color: '#907FA4' }}>Cadastro Instituição</h2>
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
                                     <label htmlFor="name" className="form-label">Nome:</label>
